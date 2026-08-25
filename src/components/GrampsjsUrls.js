@@ -7,26 +7,9 @@ import './GrampsjsFormEditUrl.js'
 import './GrampsjsIcon.js'
 
 import {fireEvent} from '../util.js'
+import {fixUrl} from '../urlUtil.js'
 
 import '@material/web/list/list-item.js'
-
-function isValidEmail(email) {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return re.test(email)
-}
-
-function fixUrl(input) {
-  let url = input
-  try {
-    url = new URL(input)
-  } catch (error) {
-    if (isValidEmail(input)) {
-      return `mailto:${input}`
-    }
-    return `https://${input}`
-  }
-  return url
-}
 
 export class GrampsjsUrls extends GrampsjsEditableList {
   row(obj, i) {
@@ -41,7 +24,7 @@ export class GrampsjsUrls extends GrampsjsEditableList {
         }}"
       >
         <a
-          href="${fixUrl(obj.path)}"
+          href="${fixUrl(obj.path, obj.type)}"
           target="_blank"
           rel="noopener noreferrer"
           class="${classMap({nopointer: this.edit})}"
