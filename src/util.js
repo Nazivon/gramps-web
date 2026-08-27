@@ -731,7 +731,7 @@ export function dateIsEmpty(date) {
     return false
   }
   if (
-    date.dateval.len > 4 &&
+    date.dateval.length > 4 &&
     JSON.stringify(date.dateval.slice(4)) !== '[0,0,0,false]'
   ) {
     return false

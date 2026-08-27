@@ -232,6 +232,26 @@ describe('dateIsEmpty', () => {
   it('returns false for text-only modifier (6)', () => {
     expect(dateIsEmpty({...emptyDate, modifier: 6})).to.be.false
   })
+
+  it('returns true for an all-zero range', () => {
+    expect(
+      dateIsEmpty({
+        ...emptyDate,
+        modifier: 4,
+        dateval: [0, 0, 0, false, 0, 0, 0, false],
+      })
+    ).to.be.true
+  })
+
+  it('returns false for a range with only the stop date set', () => {
+    expect(
+      dateIsEmpty({
+        ...emptyDate,
+        modifier: 4,
+        dateval: [0, 0, 0, false, 15, 6, 1900, false],
+      })
+    ).to.be.false
+  })
 })
 
 describe('getGregorianYears', () => {
