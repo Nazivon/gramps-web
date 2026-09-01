@@ -4,6 +4,7 @@ import {classMap} from 'lit/directives/class-map.js'
 import {fireEvent} from '../util.js'
 import {renderPersonAvatar, renderPersonDates} from './personListUtils.js'
 import {GrampsjsEditableList} from './GrampsjsEditableList.js'
+import {getSymbols} from '../symbols.js'
 import './GrampsjsFormChildRef.js'
 import './GrampsjsFormNewChild.js'
 
@@ -69,7 +70,8 @@ export class GrampsjsChildren extends GrampsjsEditableList {
           }
         }}"
       >
-        ${p.name_given || ''} ${p.name_surname || ''} ${renderPersonDates(p)}
+        ${p.name_given || ''} ${p.name_surname || ''}
+        ${renderPersonDates(p, getSymbols(this.appState.settings))}
         ${hasNonBirthRel
           ? html`<span slot="supporting-text">${relText}</span>`
           : ''}

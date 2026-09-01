@@ -14,6 +14,8 @@ import {sharedStyles} from '../SharedStyles.js'
 import {clickKeyHandler, fireEvent} from '../util.js'
 import {renderIconSvg} from '../icons.js'
 
+/* eslint-disable lit-a11y/tabindex-no-positive */
+
 export class GrampsjsTable extends GrampsjsAppStateMixin(LitElement) {
   static get styles() {
     return [
@@ -301,11 +303,12 @@ export class GrampsjsTable extends GrampsjsAppStateMixin(LitElement) {
           <tbody>
             ${this._sortedRows().map(
               ({item, index}) => html`
+                <!-- eslint-disable-next-line lit-a11y/tabindex-no-positive -->
                 <tr
                   class="${this._selectedIndices.has(index) ? 'selected' : ''}"
                   @click="${() => this._handleRowClick(index)}"
                   @keydown="${clickKeyHandler}"
-                  tabindex="${this.linked ? '0' : '-1'}"
+                  tabindex="${this.linked ? 0 : -1}"
                   role="${this.linked ? 'button' : 'row'}"
                 >
                   ${this.selectable
