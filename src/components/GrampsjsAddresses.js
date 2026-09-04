@@ -1,6 +1,8 @@
 import {html, LitElement, css} from 'lit'
 import {GrampsjsAppStateMixin} from '../mixins/GrampsjsAppStateMixin.js'
 import {sharedStyles} from '../SharedStyles.js'
+import {toDate} from '../date.js'
+import {dateIsEmpty} from '../util.js'
 
 export class GrampsjsAddresses extends GrampsjsAppStateMixin(LitElement) {
   static get styles() {
@@ -31,28 +33,30 @@ export class GrampsjsAddresses extends GrampsjsAppStateMixin(LitElement) {
 
   static get properties() {
     return {
-      data: {type: Object},
+      data: {type: Array},
+      profile: {type: Array},
     }
   }
 
   constructor() {
     super()
-    this.data = {}
+    this.data = []
+    this.profile = []
   }
 
   render() {
-    if (Object.keys(this.data).length === 0) {
+    if (this.data.length === 0) {
       return ''
     }
     return html`
     ${this.data.map(
-      obj => html`
+      (obj, i) => html`
         <dl>
-          ${obj?.date?.dateval
+          ${this._dateString(obj, i)
             ? html`
                 <div>
                   <dt>${this._('Date')}</dt>
-                  <dd>${this._toDate(obj?.date?.dateval)}</dd>
+                  <dd>${this._dateString(obj, i)}</dd>
                 </div>
               `
             : ''}
@@ -111,13 +115,21 @@ export class GrampsjsAddresses extends GrampsjsAppStateMixin(LitElement) {
     `
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  _toDate(dateVal) {
-    try {
-      return `${dateVal[2]}-${dateVal[1]}-${dateVal[0]}`
-    } catch {
-      return ''
+  // Date to show for the address at the given index. Prefers the string
+  // formatted by the API, which honours modifiers, calendars and locale.
+  //
+  // The fallback formats the raw date, for backends predating
+  // https://github.com/gramps-project/gramps-web-api/pull/949, which added
+  // addresses to the profile of every object type that has them. It can be
+  // removed once the minimum supported backend includes that change.
+  _dateString(obj, i) {
+    const dateStr = this.profile[i]?.date_str
+    if (dateStr !== undefined) {
+      return dateStr
     }
+    return obj?.date?.dateval && !dateIsEmpty(obj.date)
+      ? toDate(obj.date.dateval)
+      : ''
   }
 }
 
