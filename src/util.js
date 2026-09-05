@@ -185,6 +185,19 @@ export const objectIconPath = {
   tag: mdiLabel,
 }
 
+export const objectTypeSingular = {
+  person: 'Person',
+  family: 'Family',
+  event: 'Event',
+  place: 'Place',
+  source: 'Source',
+  citation: 'Citation',
+  repository: 'Repository',
+  note: 'Note',
+  media: 'Media Object',
+  tag: 'Tag',
+}
+
 export const objectTypePlural = {
   person: 'People',
   family: 'Families',
@@ -285,6 +298,20 @@ export const objectTypeToEndpoint = {
   media: 'media',
   tag: 'tags',
   object: 'objects',
+}
+
+// Gramps object class names, as used e.g. by the change history API
+export const endpointToObjectClass = {
+  people: 'Person',
+  families: 'Family',
+  events: 'Event',
+  places: 'Place',
+  sources: 'Source',
+  citations: 'Citation',
+  repositories: 'Repository',
+  notes: 'Note',
+  media: 'Media',
+  tags: 'Tag',
 }
 
 export const eventTypeStrings = {
@@ -739,8 +766,19 @@ export function dateIsEmpty(date) {
   return true
 }
 
-const urlRegex =
-  /((?:^|\s)https?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi
+const urlChar = '[-A-Z0-9+&@#/%?=~_|!:,.;]'
+// a URL must not end on punctuation that more likely closes the sentence
+const urlEndChar = '[-A-Z0-9+&@#/%=~_|]'
+// URLs may contain parentheses, but only balanced ones: a ")" without an
+// opening counterpart inside the URL belongs to the surrounding text, as in
+// "Found on Google (https://www.google.com)"
+const balancedParens = `\\(${urlChar}*\\)`
+
+// the URL starts at the beginning of the text or after whitespace or "("
+const urlRegex = new RegExp(
+  `((?<![^\\s(])https?://(?:${urlChar}|${balancedParens})*(?:${urlEndChar}|${balancedParens}))`,
+  'gi'
+)
 
 export function linkUrls(text, textOnly = true) {
   if (textOnly) {
